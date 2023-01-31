@@ -11,7 +11,6 @@ export interface IAdmin {
 }
 
 export interface IAdminCreateUpdate {
-  _id: Types.ObjectId;
   name: string;
   email: string;
   phone: string;

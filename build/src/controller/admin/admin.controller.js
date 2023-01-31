@@ -9,12 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.index = void 0;
+exports.store = exports.index = void 0;
+const admin_services_1 = require("../../../src/services/admin/admin.services");
 const helper_1 = require("../../helper");
 /* List of resources */
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = "hi all admin there";
+        const total = yield admin_services_1.adminAuthService.countDocument();
+        const results = yield admin_services_1.adminAuthService.findAll();
         res.status(200).json(yield (0, helper_1.HttpSuccessResponse)({
             status: true,
             message: "Admin list.",
@@ -29,3 +31,29 @@ const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.index = index;
+/* store documents */
+const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('test');
+        const { name, email, phone, location, role, password } = req.body;
+        const documents = {
+            name,
+            email,
+            phone,
+            location,
+            role,
+            password,
+        };
+        console.log(documents);
+        yield admin_services_1.adminAuthService.storeDocument({ documents });
+        res.status(200).json(yield (0, helper_1.HttpSuccessResponse)({
+            status: true,
+            message: "Changes saved.",
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.store = store;
