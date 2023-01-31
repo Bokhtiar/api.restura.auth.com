@@ -32,3 +32,4 @@ const adminController = __importStar(require("../../controller/admin/admin.contr
 exports.adminRouters = express_1.default.Router();
 exports.adminRouters.get("/", adminController.index);
 exports.adminRouters.post("/", adminController.store);
+exports.adminRouters.get("/:id", adminController.show);

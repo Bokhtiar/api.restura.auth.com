@@ -5,3 +5,4 @@ export const adminRouters = express.Router();
 
 adminRouters.get("/", adminController.index);
 adminRouters.post("/", adminController.store);
+adminRouters.get("/:id", adminController.show);

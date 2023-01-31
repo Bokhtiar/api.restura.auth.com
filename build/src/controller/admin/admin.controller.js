@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.store = exports.index = void 0;
+exports.show = exports.store = exports.index = void 0;
 const admin_services_1 = require("../../../src/services/admin/admin.services");
 const helper_1 = require("../../helper");
+const mongoose_1 = require("mongoose");
 /* List of resources */
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -34,7 +35,7 @@ exports.index = index;
 /* store documents */
 const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('test');
+        /* email exist */
         const { name, email, phone, location, role, password } = req.body;
         const documents = {
             name,
@@ -44,9 +45,8 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             role,
             password,
         };
-        console.log(documents);
         yield admin_services_1.adminAuthService.storeDocument({ documents });
-        res.status(200).json(yield (0, helper_1.HttpSuccessResponse)({
+        res.status(201).json(yield (0, helper_1.HttpSuccessResponse)({
             status: true,
             message: "Changes saved.",
         }));
@@ -57,3 +57,18 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.store = store;
+const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const result = yield admin_services_1.adminAuthService.findOneByID({ _id: new mongoose_1.Types.ObjectId(id) });
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.show = show;

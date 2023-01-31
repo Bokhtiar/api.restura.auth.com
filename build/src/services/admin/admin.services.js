@@ -24,8 +24,13 @@ const storeDocument = ({ documents, }) => __awaiter(void 0, void 0, void 0, func
     const newAdmin = new models_1.Models.Admin(Object.assign({}, documents));
     return yield newAdmin.save();
 });
+/* findone */
+const findOneByID = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield models_1.Models.Admin.findOne({ _id });
+});
 exports.adminAuthService = {
     countDocument,
     findAll,
     storeDocument,
+    findOneByID
 };

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { IAdminCreateUpdate } from "../../../src/types/admin/admin.types";
 import { adminAuthService } from "../../../src/services/admin/admin.services";
 import { HttpSuccessResponse } from "../../helper";
+import { Types } from "mongoose";
 
 /* List of resources */
 export const index = async (
@@ -34,8 +35,8 @@ export const store = async (
   next: NextFunction
 ) => {
   try {
-    console.log('test');
-    
+    /* email exist */
+
     const { name, email, phone, location, role, password } = req.body;
     const documents: IAdminCreateUpdate = {
       name,
@@ -45,15 +46,28 @@ export const store = async (
       role,
       password,
     };
-    console.log(documents);
-    
+
     await adminAuthService.storeDocument({ documents });
-    res.status(200).json(
+    res.status(201).json(
       await HttpSuccessResponse({
         status: true,
         message: "Changes saved.",
       })
     );
+  } catch (error: any) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const show = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params;
+    const result = await adminAuthService.findOneByID({_id: new Types.ObjectId(id)});
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
   } catch (error: any) {
     console.log(error);
     next(error);

@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import {
   IAdmin,
   IAdminCreateUpdate,
@@ -13,7 +14,7 @@ const countDocument = async (): Promise<number> => {
 const findAll = async (): Promise<IAdmin[] | []> => {
   return await Models.Admin.find();
 };
-
+ 
 /* store documents */
 const storeDocument = async ({
   documents,
@@ -26,8 +27,14 @@ const storeDocument = async ({
   return await newAdmin.save();
 };
 
+/* findone */
+const findOneByID = async({_id}:{_id: Types.ObjectId}):Promise<IAdmin | null> => {
+  return await Models.Admin.findOne({_id})
+}
+
 export const adminAuthService = {
   countDocument,
   findAll,
   storeDocument,
+  findOneByID
 };
