@@ -27,14 +27,20 @@ const storeDocument = async ({
   return await newAdmin.save();
 };
 
-/* findone */
+/* findoneByID */
 const findOneByID = async({_id}:{_id: Types.ObjectId}):Promise<IAdmin | null> => {
   return await Models.Admin.findOne({_id})
+}
+
+/* findOneByKey */
+const findOneByKey = async(params:any):Promise<IAdmin | null> => {
+  return await Models.Admin.findOne({...params})
 }
 
 export const adminAuthService = {
   countDocument,
   findAll,
   storeDocument,
-  findOneByID
+  findOneByID,
+  findOneByKey,
 };

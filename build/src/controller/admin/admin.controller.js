@@ -9,10 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.show = exports.store = exports.index = void 0;
-const admin_services_1 = require("../../../src/services/admin/admin.services");
-const helper_1 = require("../../helper");
+exports.show = exports.login = exports.register = exports.index = void 0;
 const mongoose_1 = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const helper_1 = require("../../helper");
+const admin_services_1 = require("../../../src/services/admin/admin.services");
 /* List of resources */
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -33,22 +35,49 @@ const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.index = index;
 /* store documents */
-const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        /* email exist */
         const { name, email, phone, location, role, password } = req.body;
+        /* email exist */
+        const emailExist = yield admin_services_1.adminAuthService.findOneByKey({ email });
+        if (emailExist) {
+            return res.status(409).json(yield (0, helper_1.HttpErrorResponse)({
+                status: false,
+                errors: [
+                    {
+                        field: "email",
+                        message: "Email already exist.",
+                    },
+                ],
+            }));
+        }
+        /* phone exist */
+        const phoneExist = yield admin_services_1.adminAuthService.findOneByKey({ phone });
+        if (phoneExist) {
+            return res.status(409).json(yield (0, helper_1.HttpErrorResponse)({
+                status: false,
+                errors: [
+                    {
+                        field: "Phone",
+                        message: "Phone already exist.",
+                    },
+                ],
+            }));
+        }
+        /* Has password  */
+        const hashPassword = yield bcrypt.hash(password, 10);
         const documents = {
             name,
             email,
             phone,
             location,
             role,
-            password,
+            password: hashPassword,
         };
         yield admin_services_1.adminAuthService.storeDocument({ documents });
         res.status(201).json(yield (0, helper_1.HttpSuccessResponse)({
             status: true,
-            message: "Changes saved.",
+            message: "Admin created.",
         }));
     }
     catch (error) {
@@ -56,7 +85,50 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         next(error);
     }
 });
-exports.store = store;
+exports.register = register;
+/* admin login */
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password } = req.body;
+        /* check email */
+        const account = yield admin_services_1.adminAuthService.findOneByKey({ email });
+        if (!account) {
+            return res.status(409).json(yield (0, helper_1.HttpErrorResponse)({
+                status: false,
+                errors: [
+                    {
+                        field: "email",
+                        message: "Invalid email or password.",
+                    },
+                ],
+            }));
+        }
+        /* compare with password */
+        const result = yield bcrypt.compare(password, account === null || account === void 0 ? void 0 : account.password);
+        if (!result) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
+        /* Generate JWT token */
+        const token = yield jwt.sign({
+            id: account === null || account === void 0 ? void 0 : account._id,
+            name: account === null || account === void 0 ? void 0 : account.name,
+            role: account === null || account === void 0 ? void 0 : account.role,
+        }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        res.status(200).json({
+            status: true,
+            token: token,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.login = login;
+/* specific resource show */
 const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

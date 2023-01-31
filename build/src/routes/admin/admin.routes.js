@@ -31,5 +31,6 @@ const express_1 = __importDefault(require("express"));
 const adminController = __importStar(require("../../controller/admin/admin.controller"));
 exports.adminRouters = express_1.default.Router();
 exports.adminRouters.get("/", adminController.index);
-exports.adminRouters.post("/", adminController.store);
+exports.adminRouters.post("/", adminController.register);
+exports.adminRouters.post("/login", adminController.login);
 exports.adminRouters.get("/:id", adminController.show);
