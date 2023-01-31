@@ -28,8 +28,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouters = void 0;
 const express_1 = __importDefault(require("express"));
+const user_permission_middleware_1 = require("../../../src/middlewares/user.permission.middleware");
 const userController = __importStar(require("../../controller/user/user.controller"));
 exports.userRouters = express_1.default.Router();
-exports.userRouters.get("/", userController.index);
 exports.userRouters.post("/login", userController.login);
+exports.userRouters.get("/me", user_permission_middleware_1.userPermission, userController.me);
 exports.userRouters.post("/", userController.register);

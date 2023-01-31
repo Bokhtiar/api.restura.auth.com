@@ -4,22 +4,7 @@ import { HttpErrorResponse } from "../../../src/helper";
 import { Request, Response, NextFunction } from "express";
 import { IUserCreateUpdate } from "../../../src/types/user/user.types";
 import { userAuthService } from "../../../src/services/user/user.services";
-
-/* resource list */
-export const index = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const results = await userAuthService.findAll()
-
-        res.status(200).json({
-            status: true,
-            data: results,
-        })
-
-    } catch (error: any) {
-        console.log(error);
-        next(error)
-    }
-}
+import { Types } from "mongoose";
 
 /* login */
 export const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -68,6 +53,24 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         });
 
     } catch (error: any) {
+        console.log(error);
+        next(error)
+    }
+}
+
+/* me */
+export const me = async(req:Request, res:Response, next:NextFunction) => {
+    try {
+        const { id } = req.user;
+        const result = await userAuthService.findOneById({_id: new Types.ObjectId(id)})
+
+        res.status(200).json({
+            status:true,
+            message: "profile",
+            data: result
+        })
+        
+    } catch (error:any) {
         console.log(error);
         next(error)
     }

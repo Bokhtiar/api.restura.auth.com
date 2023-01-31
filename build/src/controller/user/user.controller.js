@@ -9,26 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.login = exports.index = void 0;
+exports.register = exports.me = exports.login = void 0;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const helper_1 = require("../../../src/helper");
 const user_services_1 = require("../../../src/services/user/user.services");
-/* resource list */
-const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield user_services_1.userAuthService.findAll();
-        res.status(200).json({
-            status: true,
-            data: results,
-        });
-    }
-    catch (error) {
-        console.log(error);
-        next(error);
-    }
-});
-exports.index = index;
+const mongoose_1 = require("mongoose");
 /* login */
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -71,6 +57,23 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.login = login;
+/* me */
+const me = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.user;
+        const result = yield user_services_1.userAuthService.findOneById({ _id: new mongoose_1.Types.ObjectId(id) });
+        res.status(200).json({
+            status: true,
+            message: "profile",
+            data: result
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.me = me;
 /* RegisterDocument */
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
