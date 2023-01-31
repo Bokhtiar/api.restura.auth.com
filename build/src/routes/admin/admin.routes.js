@@ -28,9 +28,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminRouters = void 0;
 const express_1 = __importDefault(require("express"));
+const admin_validators_1 = require("../../../src/validations/admin/admin.validators");
 const adminController = __importStar(require("../../controller/admin/admin.controller"));
 exports.adminRouters = express_1.default.Router();
 exports.adminRouters.get("/", adminController.index);
-exports.adminRouters.post("/", adminController.register);
-exports.adminRouters.post("/login", adminController.login);
+exports.adminRouters.post("/", admin_validators_1.adminRegistrationValidators.Register, adminController.register);
+exports.adminRouters.post("/login", admin_validators_1.adminRegistrationValidators.Login, adminController.login);
 exports.adminRouters.get("/:id", adminController.show);
+exports.adminRouters.delete("/:id", adminController.destroy);

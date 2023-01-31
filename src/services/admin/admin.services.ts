@@ -37,10 +37,16 @@ const findOneByKey = async(params:any):Promise<IAdmin | null> => {
   return await Models.Admin.findOne({...params})
 }
 
+/* findOneByID Destroy */
+const findOneAndDelete = async({_id}:{_id:Types.ObjectId}):Promise<IAdmin | null> => {
+  return await Models.Admin.findByIdAndDelete({_id})
+}
+
 export const adminAuthService = {
-  countDocument,
   findAll,
-  storeDocument,
   findOneByID,
   findOneByKey,
+  countDocument,
+  storeDocument,
+  findOneAndDelete
 };

@@ -32,6 +32,7 @@ const adminScema = new mongoose_1.Schema({
         type: String,
         required: true,
         trim: true,
+        default: "admin"
     },
 }, {
     timestamps: true,

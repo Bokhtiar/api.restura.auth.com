@@ -32,6 +32,7 @@ const adminScema: Schema = new Schema<IAdminCreateUpdate>(
       type: String,
       required: true,
       trim: true,
+      default: "admin"
     },
   },
   {

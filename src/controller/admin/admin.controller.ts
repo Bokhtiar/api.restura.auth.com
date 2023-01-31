@@ -168,3 +168,20 @@ export const show = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+/* specific resource destroy */
+export const destroy = async(req:Request, res:Response, next:NextFunction) => {
+  try {
+    const { id } = req.params;
+    await adminAuthService.findOneAndDelete({_id : new Types.ObjectId(id)})
+    
+    res.status(200).json({
+      status: true,
+      message: "Admin deleted",
+    });
+
+  } catch (error:any) {
+    console.log(error);
+    next(error)
+  }
+}

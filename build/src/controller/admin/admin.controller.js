@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.show = exports.login = exports.register = exports.index = void 0;
+exports.destroy = exports.show = exports.login = exports.register = exports.index = void 0;
 const mongoose_1 = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -144,3 +144,19 @@ const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.show = show;
+/* specific resource destroy */
+const destroy = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        yield admin_services_1.adminAuthService.findOneAndDelete({ _id: new mongoose_1.Types.ObjectId(id) });
+        res.status(200).json({
+            status: true,
+            message: "Admin deleted",
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.destroy = destroy;

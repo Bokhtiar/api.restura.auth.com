@@ -32,10 +32,15 @@ const findOneByID = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () 
 const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.Admin.findOne(Object.assign({}, params));
 });
+/* findOneByID Destroy */
+const findOneAndDelete = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield models_1.Models.Admin.findByIdAndDelete({ _id });
+});
 exports.adminAuthService = {
-    countDocument,
     findAll,
-    storeDocument,
     findOneByID,
     findOneByKey,
+    countDocument,
+    storeDocument,
+    findOneAndDelete
 };
