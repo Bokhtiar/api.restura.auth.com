@@ -22,6 +22,7 @@ const dbConnection = () => __awaiter(void 0, void 0, void 0, function* () {
         // const ENVIRONMENT: any = process.env.ENVIRONMENT;
         // const DB_URI: any = ENVIRONMENT === "TEST" ? TEST_DB_URI : PROD_DB_URI;
         const DB_URI = process.env.DB_URI;
+        mongoose_1.default.set("strictQuery", false);
         yield mongoose_1.default.connect(DB_URI);
         console.log("Database connection established.");
         // console.log(`Application in ${ENVIRONMENT} environment mode.`);

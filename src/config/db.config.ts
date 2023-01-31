@@ -9,6 +9,7 @@ export const dbConnection = async () => {
 
     // const DB_URI: any = ENVIRONMENT === "TEST" ? TEST_DB_URI : PROD_DB_URI;
     const DB_URI: any = process.env.DB_URI;
+    mongoose.set("strictQuery", false);
     await mongoose.connect(DB_URI);
 
     console.log("Database connection established.");

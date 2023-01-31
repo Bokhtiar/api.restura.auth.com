@@ -1,0 +1,6 @@
+import express from "express";
+import * as adminController from '../../controller/admin/admin.controller'
+
+export const adminRouters = express.Router();
+
+adminRouters.get("/", adminController.index);
