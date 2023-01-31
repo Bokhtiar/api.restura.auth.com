@@ -9,10 +9,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = void 0;
+exports.register = exports.login = exports.index = void 0;
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const helper_1 = require("../../../src/helper");
 const user_services_1 = require("../../../src/services/user/user.services");
-/* storeDocument */
+/* resource list */
+const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const results = yield user_services_1.userAuthService.findAll();
+        res.status(200).json({
+            status: true,
+            data: results,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.index = index;
+/* login */
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password } = req.body;
+        /* check email */
+        const account = yield user_services_1.userAuthService.findOneByKey({ email });
+        if (!account) {
+            return res.status(409).json(yield (0, helper_1.HttpErrorResponse)({
+                status: false,
+                errors: [
+                    {
+                        field: "email",
+                        message: "Invalid email or password.",
+                    },
+                ],
+            }));
+        }
+        /* compare with password */
+        const result = yield bcrypt.compare(password, account === null || account === void 0 ? void 0 : account.password);
+        if (!result) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
+        /* Generate JWT token */
+        const token = yield jwt.sign({
+            id: account === null || account === void 0 ? void 0 : account._id,
+            name: account === null || account === void 0 ? void 0 : account.name,
+            role: account === null || account === void 0 ? void 0 : account.role,
+        }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        res.status(200).json({
+            status: true,
+            token: token,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.login = login;
+/* RegisterDocument */
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, phone, location, role, password } = req.body;
@@ -42,11 +101,13 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 ],
             }));
         }
+        /* Has password  */
+        const hashPassword = yield bcrypt.hash(password, 10);
         const documents = {
-            name, email, phone, location, role, password
+            name, email, phone, location, role, password: hashPassword
         };
         yield user_services_1.userAuthService.storeDocument({ documents });
-        res.status(200).json({
+        res.status(201).json({
             status: true,
             message: "User created."
         });

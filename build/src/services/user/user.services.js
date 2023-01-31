@@ -15,12 +15,17 @@ const models_1 = require("../../models");
 const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.User.findOne(Object.assign({}, params));
 });
+/* resource list */
+const findAll = () => __awaiter(void 0, void 0, void 0, function* () {
+    return models_1.Models.User.find();
+});
 /* store document */
 const storeDocument = ({ documents }) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = new models_1.Models.User(Object.assign({}, documents));
     return newUser.save();
 });
 exports.userAuthService = {
+    findAll,
     findOneByKey,
     storeDocument
 };

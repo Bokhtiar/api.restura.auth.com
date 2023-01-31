@@ -30,4 +30,6 @@ exports.userRouters = void 0;
 const express_1 = __importDefault(require("express"));
 const userController = __importStar(require("../../controller/user/user.controller"));
 exports.userRouters = express_1.default.Router();
+exports.userRouters.get("/", userController.index);
+exports.userRouters.post("/login", userController.login);
 exports.userRouters.post("/", userController.register);
