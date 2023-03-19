@@ -35,3 +35,4 @@ exports.userRouters.post("/login", userController.login);
 exports.userRouters.post("/", userController.register);
 exports.userRouters.get("/me", user_permission_middleware_1.userPermission, userController.me);
 exports.userRouters.post("/reset", userController.Reset);
+exports.userRouters.post("/change-password", userController.changePassword);

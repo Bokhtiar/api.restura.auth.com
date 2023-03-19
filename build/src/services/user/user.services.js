@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userAuthService = void 0;
+exports.userAuthService = exports.changePassword = void 0;
 const bcrypt = require("bcryptjs");
 const models_1 = require("../../models");
 const nodemailer = require("nodemailer");
@@ -59,16 +59,41 @@ const ResetAccount = ({ email, }) => __awaiter(void 0, void 0, void 0, function*
     });
     /* Has password  */
     const hashPassword = yield bcrypt.hash(`${newPassword}`, 10);
-    console.log("asdf", hashPassword);
     /* password filed updated */
     const _id = account === null || account === void 0 ? void 0 : account._id;
     return yield models_1.Models.User.findByIdAndUpdate(_id, {
         $set: { password: hashPassword },
     });
 });
+const changePassword = ({ document, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = document.email;
+    const account = yield models_1.Models.User.findOne({ email });
+    const _id = account === null || account === void 0 ? void 0 : account._id;
+    /* old password and current password cheeck */
+    if (yield bcrypt.compare(document.oldPassword, account === null || account === void 0 ? void 0 : account.password)) {
+        /* existing password and newpassword != check  */
+        if (!(yield bcrypt.compare(document.newPassword, account === null || account === void 0 ? void 0 : account.password))) {
+            /* haspaword */
+            const hashPassword = yield bcrypt.hash(`${document.newPassword}`, 10);
+            /* password field updated */
+            yield models_1.Models.User.findByIdAndUpdate(account === null || account === void 0 ? void 0 : account._id, {
+                $set: { password: hashPassword },
+            });
+            return "Password changed.";
+        }
+        else {
+            return "Already exist this password";
+        }
+    }
+    else {
+        return "Incurrect your old password";
+    }
+});
+exports.changePassword = changePassword;
 exports.userAuthService = {
     findOneById,
     findOneByKey,
     storeDocument,
     ResetAccount,
+    changePassword: exports.changePassword,
 };

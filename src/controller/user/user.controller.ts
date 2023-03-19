@@ -156,7 +156,33 @@ export const Reset = async (
     await userAuthService.ResetAccount({ email });
     res.status(201).json({
       status: true,
-      message: "Already mail sended.",
+      message: "Already mail sended with your new password",
+    });
+  } catch (error: any) {
+    console.log(error);
+    next(error);
+  }
+};
+
+/* change password */
+export const changePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+
+    const document = {
+      email,
+      oldPassword,
+      newPassword,
+    };
+
+    const result =  await userAuthService.changePassword({document});
+    res.status(201).json({
+      status: true,
+      message: result,
     });
   } catch (error: any) {
     console.log(error);

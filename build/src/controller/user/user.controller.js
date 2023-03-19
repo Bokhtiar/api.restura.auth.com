@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Reset = exports.register = exports.me = exports.login = void 0;
+exports.changePassword = exports.Reset = exports.register = exports.me = exports.login = void 0;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const helper_1 = require("../../../src/helper");
@@ -135,7 +135,7 @@ const Reset = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         yield user_services_1.userAuthService.ResetAccount({ email });
         res.status(201).json({
             status: true,
-            message: "Already mail sended.",
+            message: "Already mail sended with your new password",
         });
     }
     catch (error) {
@@ -144,3 +144,24 @@ const Reset = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.Reset = Reset;
+/* change password */
+const changePassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, oldPassword, newPassword } = req.body;
+        const document = {
+            email,
+            oldPassword,
+            newPassword,
+        };
+        const result = yield user_services_1.userAuthService.changePassword({ document });
+        res.status(201).json({
+            status: true,
+            message: result,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.changePassword = changePassword;

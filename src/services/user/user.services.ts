@@ -68,10 +68,9 @@ const ResetAccount = async ({
     }
   });
 
-  /* Has password  */ 
+  /* Has password  */
   const hashPassword = await bcrypt.hash(`${newPassword}`, 10);
-  console.log("asdf",hashPassword);
-   
+
   /* password filed updated */
   const _id: any = account?._id;
   return await Models.User.findByIdAndUpdate(_id, {
@@ -79,9 +78,48 @@ const ResetAccount = async ({
   });
 };
 
+/* change password */
+
+type changePasswordTypes = {
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+};
+
+export const changePassword = async ({
+  document,
+}: {
+  document: changePasswordTypes;
+}): Promise<any> => {
+  const email = document.email;
+
+  const account = await Models.User.findOne({ email });
+  const _id = account?._id;
+
+  /* old password and current password cheeck */
+  if (await bcrypt.compare(document.oldPassword, account?.password)) {
+    /* existing password and newpassword != check  */
+    if (!(await bcrypt.compare(document.newPassword, account?.password))) {
+      /* haspaword */
+      const hashPassword = await bcrypt.hash(`${document.newPassword}`, 10);
+      /* password field updated */
+      await Models.User.findByIdAndUpdate(account?._id, {
+        $set: { password: hashPassword },
+      });
+      return "Password changed."
+    } else {
+      return "Already exist this password";
+    }
+  } else {
+    return "Incurrect your old password";
+  }
+
+};
+
 export const userAuthService = {
   findOneById,
   findOneByKey,
   storeDocument,
   ResetAccount,
+  changePassword,
 };

@@ -8,3 +8,4 @@ userRouters.post("/login", userController.login);
 userRouters.post("/", userController.register);
 userRouters.get("/me", userPermission, userController.me);
 userRouters.post("/reset", userController.Reset);
+userRouters.post("/change-password", userController.changePassword);
