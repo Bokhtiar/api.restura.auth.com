@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.me = exports.login = void 0;
+exports.Reset = exports.register = exports.me = exports.login = void 0;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const helper_1 = require("../../../src/helper");
@@ -61,11 +61,13 @@ exports.login = login;
 const me = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.user;
-        const result = yield user_services_1.userAuthService.findOneById({ _id: new mongoose_1.Types.ObjectId(id) });
+        const result = yield user_services_1.userAuthService.findOneById({
+            _id: new mongoose_1.Types.ObjectId(id),
+        });
         res.status(200).json({
             status: true,
             message: "profile",
-            data: result
+            data: result,
         });
     }
     catch (error) {
@@ -107,12 +109,17 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         /* Has password  */
         const hashPassword = yield bcrypt.hash(password, 10);
         const documents = {
-            name, email, phone, location, role, password: hashPassword
+            name,
+            email,
+            phone,
+            location,
+            role,
+            password: hashPassword,
         };
         yield user_services_1.userAuthService.storeDocument({ documents });
         res.status(201).json({
             status: true,
-            message: "User created."
+            message: "User created.",
         });
     }
     catch (error) {
@@ -121,3 +128,19 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.register = register;
+/* password reset */
+const Reset = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        yield user_services_1.userAuthService.ResetAccount({ email });
+        res.status(201).json({
+            status: true,
+            message: "Already mail sended.",
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.Reset = Reset;

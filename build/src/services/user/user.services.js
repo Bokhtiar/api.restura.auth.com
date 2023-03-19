@@ -10,22 +10,65 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userAuthService = void 0;
+const bcrypt = require("bcryptjs");
 const models_1 = require("../../models");
+const nodemailer = require("nodemailer");
 /* findOneBykey */
 const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.User.findOne(Object.assign({}, params));
 });
 /* store document */
-const storeDocument = ({ documents }) => __awaiter(void 0, void 0, void 0, function* () {
+const storeDocument = ({ documents, }) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = new models_1.Models.User(Object.assign({}, documents));
     return newUser.save();
 });
 /* findOneByID */
-const findOneById = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+const findOneById = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.User.findById({ _id });
+});
+/* reset */
+const ResetAccount = ({ email, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = yield models_1.Models.User.findOne({ email });
+    /* rendom password generator */
+    function between(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+    const newPassword = between(99999999, 10000000);
+    /* email configration */
+    var transporter = nodemailer.createTransport({
+        host: "sandbox.smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+            user: "84936e37a64769",
+            pass: "55ac826c036ded",
+        },
+    });
+    let message = {
+        from: "grapView@email.com",
+        to: "bokhtiartoshar1@gmail.com",
+        subject: "Password reset from restura.com",
+        html: `${newPassword}`,
+    };
+    transporter.sendMail(message, function (err, info) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log("email sended");
+        }
+    });
+    /* Has password  */
+    const hashPassword = yield bcrypt.hash(`${newPassword}`, 10);
+    console.log("asdf", hashPassword);
+    /* password filed updated */
+    const _id = account === null || account === void 0 ? void 0 : account._id;
+    return yield models_1.Models.User.findByIdAndUpdate(_id, {
+        $set: { password: hashPassword },
+    });
 });
 exports.userAuthService = {
     findOneById,
     findOneByKey,
     storeDocument,
+    ResetAccount,
 };

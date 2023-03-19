@@ -25,7 +25,7 @@ const storeDocument = ({ documents, }) => __awaiter(void 0, void 0, void 0, func
     return yield newAdmin.save();
 });
 /* findoneByID */
-const findOneByID = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+const findOneByID = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.Admin.findOne({ _id });
 });
 /* findOneByKey */
@@ -33,14 +33,19 @@ const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () 
     return yield models_1.Models.Admin.findOne(Object.assign({}, params));
 });
 /* findOneByID Destroy */
-const findOneAndDelete = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+const findOneAndDelete = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield models_1.Models.Admin.findByIdAndDelete({ _id });
+});
+/* profile me */
+const profile = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield models_1.Models.Admin.findById(_id);
 });
 exports.adminAuthService = {
     findAll,
+    profile,
     findOneByID,
     findOneByKey,
     countDocument,
     storeDocument,
-    findOneAndDelete
+    findOneAndDelete,
 };

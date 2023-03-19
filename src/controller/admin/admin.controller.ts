@@ -9,7 +9,7 @@ import { adminAuthService } from "../../../src/services/admin/admin.services";
 /* List of resources */
 export const index = async (
   req: Request,
-  res: Response, 
+  res: Response,
   next: NextFunction
 ) => {
   try {
@@ -23,7 +23,6 @@ export const index = async (
         data: results,
       })
     );
-
   } catch (error: any) {
     if (error) {
       console.log(error);
@@ -42,7 +41,7 @@ export const register = async (
     const { name, email, phone, location, role, password } = req.body;
 
     /* email exist */
-    const emailExist = await adminAuthService.findOneByKey({ email })
+    const emailExist = await adminAuthService.findOneByKey({ email });
     if (emailExist) {
       return res.status(409).json(
         await HttpErrorResponse({
@@ -58,7 +57,7 @@ export const register = async (
     }
 
     /* phone exist */
-    const phoneExist = await adminAuthService.findOneByKey({ phone })
+    const phoneExist = await adminAuthService.findOneByKey({ phone });
     if (phoneExist) {
       return res.status(409).json(
         await HttpErrorResponse({
@@ -93,7 +92,6 @@ export const register = async (
         message: "Admin created.",
       })
     );
-
   } catch (error: any) {
     console.log(error);
     next(error);
@@ -101,12 +99,16 @@ export const register = async (
 };
 
 /* admin login */
-export const login = async (req: Request, res: Response, next: NextFunction) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { email, password } = req.body
-    
+    const { email, password } = req.body;
+
     /* check email */
-    const account = await adminAuthService.findOneByKey({ email })
+    const account = await adminAuthService.findOneByKey({ email });
     if (!account) {
       return res.status(409).json(
         await HttpErrorResponse({
@@ -145,24 +147,36 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       status: true,
       token: token,
     });
-
   } catch (error: any) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};
+
+/* sepecific resource show on profile(me) */
+export const profile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.status(200).json({
+    status: true,
+    message: "ok",
+  });
+};
 
 /* specific resource show */
 export const show = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const result = await adminAuthService.findOneByID({ _id: new Types.ObjectId(id) });
+    const result = await adminAuthService.findOneByID({
+      _id: new Types.ObjectId(id),
+    });
 
     res.status(200).json({
       status: true,
       data: result,
     });
-
   } catch (error: any) {
     console.log(error);
     next(error);
@@ -170,18 +184,21 @@ export const show = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 /* specific resource destroy */
-export const destroy = async(req:Request, res:Response, next:NextFunction) => {
+export const destroy = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
-    await adminAuthService.findOneAndDelete({_id : new Types.ObjectId(id)})
-    
+    await adminAuthService.findOneAndDelete({ _id: new Types.ObjectId(id) });
+
     res.status(200).json({
       status: true,
       message: "Admin deleted",
     });
-
-  } catch (error:any) {
+  } catch (error: any) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};

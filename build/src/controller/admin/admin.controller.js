@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.destroy = exports.show = exports.login = exports.register = exports.index = void 0;
+exports.destroy = exports.show = exports.profile = exports.login = exports.register = exports.index = void 0;
 const mongoose_1 = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -128,11 +128,21 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.login = login;
+/* sepecific resource show on profile(me) */
+const profile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({
+        status: true,
+        message: "ok",
+    });
+});
+exports.profile = profile;
 /* specific resource show */
 const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const result = yield admin_services_1.adminAuthService.findOneByID({ _id: new mongoose_1.Types.ObjectId(id) });
+        const result = yield admin_services_1.adminAuthService.findOneByID({
+            _id: new mongoose_1.Types.ObjectId(id),
+        });
         res.status(200).json({
             status: true,
             data: result,
