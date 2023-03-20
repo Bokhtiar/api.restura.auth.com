@@ -68,7 +68,6 @@ const ResetAccount = ({ email, }) => __awaiter(void 0, void 0, void 0, function*
 const changePassword = ({ document, }) => __awaiter(void 0, void 0, void 0, function* () {
     const email = document.email;
     const account = yield models_1.Models.User.findOne({ email });
-    const _id = account === null || account === void 0 ? void 0 : account._id;
     /* old password and current password cheeck */
     if (yield bcrypt.compare(document.oldPassword, account === null || account === void 0 ? void 0 : account.password)) {
         /* existing password and newpassword != check  */
@@ -93,7 +92,7 @@ exports.changePassword = changePassword;
 exports.userAuthService = {
     findOneById,
     findOneByKey,
-    storeDocument,
     ResetAccount,
+    storeDocument,
     changePassword: exports.changePassword,
 };

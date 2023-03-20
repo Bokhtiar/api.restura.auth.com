@@ -94,7 +94,6 @@ export const changePassword = async ({
   const email = document.email;
 
   const account = await Models.User.findOne({ email });
-  const _id = account?._id;
 
   /* old password and current password cheeck */
   if (await bcrypt.compare(document.oldPassword, account?.password)) {
@@ -106,20 +105,19 @@ export const changePassword = async ({
       await Models.User.findByIdAndUpdate(account?._id, {
         $set: { password: hashPassword },
       });
-      return "Password changed."
+      return "Password changed.";
     } else {
       return "Already exist this password";
     }
   } else {
     return "Incurrect your old password";
   }
-
 };
 
 export const userAuthService = {
   findOneById,
   findOneByKey,
-  storeDocument,
   ResetAccount,
+  storeDocument,
   changePassword,
 };
